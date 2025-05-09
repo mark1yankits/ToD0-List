@@ -51,6 +51,5 @@ export class TaskController {
   remove(@Param('id') id: string) {
     return this.taskService.remove(+id);
   }
-
   
 }
