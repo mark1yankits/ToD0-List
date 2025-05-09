@@ -7,28 +7,5 @@ import { UpdateCollaboratorDto } from './dto/update-collaborator.dto';
 export class CollaboratorController {
   constructor(private readonly collaboratorService: CollaboratorService) {}
 
-  @Post()
-  create(@Body() createCollaboratorDto: CreateCollaboratorDto) {
-    return this.collaboratorService.create(createCollaboratorDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.collaboratorService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.collaboratorService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCollaboratorDto: UpdateCollaboratorDto) {
-    return this.collaboratorService.update(+id, updateCollaboratorDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.collaboratorService.remove(+id);
-  }
+  
 }
