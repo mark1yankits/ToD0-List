@@ -1,34 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Req,
+  Get,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { ToDoListService } from './to-do-list.service';
 import { CreateToDoListDto } from './dto/create-to-do-list.dto';
-import { UpdateToDoListDto } from './dto/update-to-do-list.dto';
+import { JwtAuthGuard } from 'src/auth/guards/auth/jwt-auth.guard';
 
-@Controller('to-do-list')
+@Controller('toDoList')
+@UseGuards(JwtAuthGuard)
 export class ToDoListController {
   constructor(private readonly toDoListService: ToDoListService) {}
 
   @Post()
-  create(@Body() createToDoListDto: CreateToDoListDto) {
-    return this.toDoListService.create(createToDoListDto);
+  create(@Body() dto: CreateToDoListDto, @Req() req) {
+    return this.toDoListService.create(dto, +req.user.id);
   }
 
   @Get()
-  findAll() {
-    return this.toDoListService.findAll();
+  getAll(@Req() req) {
+    return this.toDoListService.findByOwner(+req.user.id);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.toDoListService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateToDoListDto: UpdateToDoListDto) {
-    return this.toDoListService.update(+id, updateToDoListDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.toDoListService.remove(+id);
+  getOne(@Param('id') id: number, @Req() req) {
+    return this.toDoListService.findOne(id, +req.user.id);
   }
 }
