@@ -23,14 +23,16 @@ const parseJwt = (token: string) => {
         const token = localStorage.getItem("token");
         const userData = token ? parseJwt(token) : null;
         const userId = userData?.id;
-        const userRole = userData?.role;  // Отримуємо роль користувача з JWT
+        const userRole = userData?.role;  
     
+        // for save role user
         useEffect(() => {
             if (userRole) {
-                setRole(userRole);  // Зберігаємо роль користувача
+                setRole(userRole);  
             }
         }, [userRole]);
-    
+        
+
         const axiosInstance = axios.create({
             baseURL: "http://localhost:3004/api",
             headers: {
@@ -38,6 +40,7 @@ const parseJwt = (token: string) => {
             },
         });
     
+        // show all common task
         const fetchCommonTasks = async () => {
             try {
                 const response = await axiosInstance.get(`/toDoList/user/${userId}`);
@@ -53,7 +56,22 @@ const parseJwt = (token: string) => {
                 fetchCommonTasks();
             }
         }, [userId]);
-    
+        
+
+        // for compleate task btn
+
+        const handleComplete = async (id: number) => {
+            try {
+                await axiosInstance.patch(`/toDoList/${id}`, {
+                    isCompleted: true,
+                });
+                fetchCommonTasks();
+            } catch (err) {
+                console.error("Error marking task as complete:", err);
+            }
+        };
+
+        // add task requires the admin role
         const handleSubmit = async (e: React.FormEvent) => {
             e.preventDefault();
             try {
@@ -149,24 +167,35 @@ const parseJwt = (token: string) => {
                                 </>
                             )}
     
+
+                            {/* show  task  */}
                             <div className="max-w-2xl mx-auto px-4 mt-10">
                                 <h2 className="flex text-4xl font-semibold mb-4 justify-center">Your Shared Tasks</h2>
                                 <ul className="space-y-2">
                                     {tasks.map((task) => (
                                         <li key={task.id} className="p-4 bg-gray-600 rounded-md shadow-sm">
                                             <div className="flex justify-between">
+
                                                 <div>
                                                     <h3 className="text-lg font-medium">{task.title}</h3>
                                                     <p>{task.description}</p>
                                                 </div>
+
                                                 {role === "Admin" && (  
                                                     <button
                                                         onClick={() => handleDelete(task.id)}
-                                                        className="bg-red-500 px-3 py-1 rounded-md text-white hover:bg-red-600"
+                                                        className="bg-red-500 px-3 py-1 rounded-md text-white hover:bg-blue-500"
                                                     >
                                                         Delete
                                                     </button>
                                                 )}
+
+                                                <button
+                                                        onClick={() => handleDelete(task.id)}
+                                                        className="bg-blue-600 px-3 py-1 rounded-md text-white hover:bg-red-600"
+                                                    >
+                                                        Compleate
+                                                </button>
                                             </div>
                                         </li>
                                     ))}
@@ -180,4 +209,4 @@ const parseJwt = (token: string) => {
     };
     
     export default СommonTasks;
-    
+
