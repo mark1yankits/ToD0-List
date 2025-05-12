@@ -9,6 +9,9 @@ export class CreateUserDto {
     @IsEmail()
     email:string
 
+    @IsString()
+    role:string
+
     @MinLength(8, { message: 'Password must be more than 8 symbols' })
     password: string;
 }
