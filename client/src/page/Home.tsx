@@ -10,7 +10,7 @@ export const Home:FC=()=>{
 
             <div className="flex justify-center mt-10 mb-10">
                 <img 
-                    className="rounded-2xl w-full max-w-lg shadow-lg  rounded-md"
+                    className=" w-full max-w-lg shadow-lg  rounded-4xl"
                     style={{ boxShadow: "0px 0px 60px grey" }}
                     src="./img/PH-2.jpg" 
                     alt="Motivational" 
