@@ -13,9 +13,13 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.userService.findOne(+id);
-  // }
+  @Get('check-email/:email')
+  async checkEmail(@Param('email') email: string) {
+    const user = await this.userService.findByEmail(email);
+    if (!user) {
+      return { exists: false, message: 'User not found' };
+    }
+    return { exists: true, message: 'User exists', userId: user.id };
+  }
 
 }
