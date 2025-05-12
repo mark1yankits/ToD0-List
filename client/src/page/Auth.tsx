@@ -10,13 +10,15 @@ const Auth = () => {
     const [message, setMessage] = useState("");
     const navigate = useNavigate(); 
 
+    const [role, setRole] = useState("Viewer");
+
 const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage("");
     
     const requestBody = isLogin
         ? { email, password }
-        : { name, email, password };
+        : { name, email, password, role};
 
     const url = isLogin
         ? "http://localhost:3004/api/auth/login"
@@ -57,6 +59,7 @@ return (
 
     <form onSubmit={handleSubmit} className="space-y-4">
         {!isLogin && (
+            <>
             <div>
                 <label className="block mb-2">Ім'я:</label>
                 <input
@@ -67,6 +70,19 @@ return (
                     required
                 />
             </div>
+
+            <div>
+            <label className="block mb-2">Роль:</label>
+            <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md"
+            >
+                <option value="Viewer">Viewer</option>
+                <option value="Admin">Admin</option>
+            </select>
+            </div>
+            </>
         )}
 
         <div>

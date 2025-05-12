@@ -17,7 +17,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
                     <Link to="/tasks"> Tasks</Link>
                     <Link to="/commonTasks" className="hover:text-gray-300">Common tasks</Link>
                     <Link to="/auth" className="hover:text-gray-300">Login</Link>
-                    <Link to="/logout" className="hover:text-gray-300">Logout</Link> 
+                    <Link to="/" className="hover:text-gray-300">Logout</Link> 
                 </nav>
             </header>
             <main className="flex-1 p-6">

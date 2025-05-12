@@ -261,7 +261,6 @@ const parseJwt = (token: string) => {
 
                                 
                                 {
-                                    role === "Admin" && (
                                         isModalOpen ? (
                                             <button
                                                 className="flex mx-auto mt-12 mb-5 justify-center text-gray-600 cursor-pointer hover:text-white hover:scale-110 transition-all duration-300"
@@ -277,7 +276,6 @@ const parseJwt = (token: string) => {
                                                 Show your complete task
                                             </button>
                                         )
-                                    )
                                 }
                                 
                                 
