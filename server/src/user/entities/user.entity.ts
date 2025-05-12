@@ -3,6 +3,10 @@ import { Task } from "src/task/entities/task.entity";
 import { ToDoList } from "src/to-do-list/entities/to-do-list.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
+export enum UserRole {
+    Admin = 'Admin',
+    Viewer = 'Viewer',
+}
 @Entity()
 export class User {
 
@@ -17,6 +21,9 @@ export class User {
 
     @Column()
     password: string;
+    
+    @Column({ type: 'enum', enum: UserRole, default: UserRole.Viewer })
+    role: UserRole;
 
     @OneToMany(() => ToDoList, (list) => list.owner)
     ownedLists: ToDoList[];
@@ -26,4 +33,5 @@ export class User {
 
     @OneToMany(() => Task, (task) => task.user)
     tasks: Task[];
+
 }

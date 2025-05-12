@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { ToDoList } from './entities/to-do-list.entity';
 import { CreateToDoListDto } from './dto/create-to-do-list.dto';
 import { User } from 'src/user/entities/user.entity';
+import { lutimes } from 'fs';
 
 @Injectable()
 export class ToDoListService {
@@ -42,23 +43,47 @@ export class ToDoListService {
     return await this.toDoListRepository.save(newToDoList);
   }
 
-  async findByOwner(userId: number) {
-    return this.toDoListRepository.find({
-      where: { owner: { id: userId } },
-      relations: ['tasks', 'collaborators'],
-    });
+  
+
+
+  // id user found one
+
+  async findByUserId(userId: number) {
+    const list = this.toDoListRepository.find({
+      where:{
+        owner:{id:userId}
+      }
+    }) 
+
+    if(!list) throw new BadRequestException('no ToDO list foune for this user !');
+
+    return list
+
   }
 
-  async findOne(id: number, userId: number) {
-    const list = await this.toDoListRepository.findOne({
-      where: { id, owner: { id: userId } },
-      relations: ['tasks', 'collaborators'],
-    });
+  async remove(listId: number, userId:number) {
+    const listRemove = await this.toDoListRepository.findOne({
+      where:{
+        id:listId, 
+        owner:{id:userId}
+      },
+      relations: ['owner', 'tasks', 'collaborators']
+    })
 
-    if (!list) {
-      throw new BadRequestException('List not found or access denied');
+    if(!listRemove) throw new BadRequestException('ToDo List not found or access denied !')
+
+    if (listRemove.tasks.length > 0) {
+      console.log('Removing tasks associated with the list');
+      await this.toDoListRepository.manager.remove(listRemove.tasks);
     }
-
-    return list;
+  
+    if (listRemove.collaborators.length > 0) {
+      console.log('Removing collaborators associated with the list');
+      await this.toDoListRepository.manager.remove(listRemove.collaborators);
+    }
+      await this.toDoListRepository.remove(listRemove);
+  
+      console.log('ToDo List successfully deleted');
+      return { message: 'ToDo List successfully deleted' };
   }
 }

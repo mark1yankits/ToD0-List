@@ -1,4 +1,4 @@
-import { IsEnum, isNotEmpty, IsNotEmpty, IsString } from "class-validator"
+import {IsNotEmpty, IsString } from "class-validator"
 
 
 export class CreateCollaboratorDto {
@@ -7,8 +7,7 @@ export class CreateCollaboratorDto {
     @IsString()
     email:string;
 
-    @IsNotEmpty()
-    role: 'Admin' | 'Viewer';
+
 
     @IsNotEmpty()
     toDoListId: number

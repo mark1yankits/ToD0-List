@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { ToDoListService } from './to-do-list.service';
 import { CreateToDoListDto } from './dto/create-to-do-list.dto';
@@ -21,13 +22,15 @@ export class ToDoListController {
     return this.toDoListService.create(dto, +req.user.id);
   }
 
-  @Get()
-  getAll(@Req() req) {
-    return this.toDoListService.findByOwner(+req.user.id);
+  @Get('user/:userId')
+  @UseGuards(JwtAuthGuard)
+  findByUserId(@Param('userId') userId:number){
+    return this.toDoListService.findByUserId(userId)
   }
-
-  @Get(':id')
-  getOne(@Param('id') id: number, @Req() req) {
-    return this.toDoListService.findOne(id, +req.user.id);
+  
+  @Delete(':listId')
+  @UseGuards(JwtAuthGuard)
+  remove(@Param('listId') listId: number, @Req() req) {
+    return this.toDoListService.remove(listId, +req.user.id);
   }
 }
