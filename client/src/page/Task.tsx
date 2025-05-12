@@ -10,7 +10,7 @@ const Task = () => {
 
 
     
-    const token = localStorage.getItem("token"); // Get the token from localStorage
+    const token = localStorage.getItem("token"); 
 
 
     const axiosInstance = axios.create({
@@ -19,7 +19,6 @@ const Task = () => {
         },
     });
 
-    // --- Fetch tasks from the backend ---
     const fetchTasks = async () => {
         try {
             const response = await axiosInstance.get("http://localhost:3004/api/tasks");
@@ -33,7 +32,6 @@ const Task = () => {
         fetchTasks();
     }, []);
 
-    // --- Handle task creation ---
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -56,7 +54,6 @@ const Task = () => {
         }
     };
 
-    // --- Handle task deletion ---
     const handleDelete = async (id: string) => {
         try {
             await axiosInstance.delete(`http://localhost:3004/api/tasks/${id}`);
@@ -70,7 +67,6 @@ const Task = () => {
 
 
 
-    // --- Handle task completion toggle ---
     const handleToggleComplete = async (id: string, currentState: boolean) => {
         try {
             await axiosInstance.patch(`http://localhost:3004/api/tasks/${id}`, {
@@ -86,7 +82,6 @@ const Task = () => {
         <div className="flex flex-col items-center">
 
 
-            {/* --- Form for creating a new task --- */}
             <div className="bg-slate-800 p-6 rounded-md text-white max-w-md mb-8">
                 <h2 className="text-2xl mb-4">Create New Task</h2>
                 {message && <p className="mb-4 text-center text-green-400">{message}</p>}
@@ -122,7 +117,6 @@ const Task = () => {
 
 
 
-            {/* --- Task List Container --- */}
             <div className="bg-slate-700 p-6 rounded-md text-white max-w-4xl w-full">
                 <h2 className="text-2xl mb-4 text-center">Task List</h2>
                 <div className="space-y-4">

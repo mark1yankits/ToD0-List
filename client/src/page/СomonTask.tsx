@@ -60,12 +60,11 @@ const parseJwt = (token: string) => {
         };
 
 
-        // show task with acess
 
         const fetchCommonTasksWithAcees = async () => {
             try {
                 const response = await axiosInstance.get(`/collaborator/user/${userEmail}`);
-                setSharedTasks(response.data); //<--- save joint tugs
+                setSharedTasks(response.data); 
             } catch (err) {
                 console.error("Error fetching shared tasks with access:", err);
             }
@@ -78,7 +77,6 @@ const parseJwt = (token: string) => {
         }, [userId]);
         
 
-        // for compleate task btn
 
         const handleComplete = async (id: number) => {
             try {
@@ -105,7 +103,6 @@ const parseJwt = (token: string) => {
 
 
 
-        // add task requires the admin role
         const handleSubmit = async (e: React.FormEvent) => {
             e.preventDefault();
             try {
@@ -299,8 +296,6 @@ const parseJwt = (token: string) => {
                             </div>
 
 
-                            {/* compleate task show */}
-
                             
                             {isModalOpen && (
                                 <div>
@@ -347,9 +342,6 @@ const parseJwt = (token: string) => {
                                     </>
                                 </div>
                             )}
-
-
-                            {/* Acess modal window */}
 
 
                             <>
