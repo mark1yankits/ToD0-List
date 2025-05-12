@@ -112,7 +112,6 @@ const parseJwt = (token: string) => {
                 let userExists = false;
                 let collaboratorRole = "Viewer"; 
         
-                // 1/
                 if (collaboratorEmail) {
                     const emailCheckResponse = await axiosInstance.get(`/user/check-email/${collaboratorEmail}`);
                     if (emailCheckResponse.data.exists) {
@@ -126,7 +125,6 @@ const parseJwt = (token: string) => {
                     }
                 }
         
-                // 2. crate task
                 const response = await axiosInstance.post("/toDoList", {
                     title,
                     description,
@@ -134,7 +132,6 @@ const parseJwt = (token: string) => {
         
                 const listId = response.data.id;
         
-                // 3. create colloborator
                 if (userExists && collaboratorEmail) {
                     await axiosInstance.post(`/collaborator/${listId}`, {
                         email: collaboratorEmail,
@@ -142,7 +139,6 @@ const parseJwt = (token: string) => {
                     });
                 }
         
-                // 4. clear and update 
                 setTitle("");
                 setDescription("");
                 setCollaboratorEmail("");
@@ -263,18 +259,29 @@ const parseJwt = (token: string) => {
                                 </ul>
 
 
-
+                                
                                 {
-                                    isModalOpen 
-                                    ? 
-                                    <button className="flex  mx-auto mt-15 mb-5 justify-center text-gray-600 cursor-pointer hover:text-white hover:scale-110 transition-all duration-300" onClick={()=>setIsModalOpen(false)}>
-                                        close
-                                    </button>
-                                    :
-                                    <button className="flex  mx-auto mt-15 mb-15 justify-center text-gray-600 cursor-pointer hover:text-white hover:scale-110 transition-all duration-300" onClick={()=>setIsModalOpen(true)}>
-                                        Show your compleate task
-                                    </button>
+                                    role === "Admin" && (
+                                        isModalOpen ? (
+                                            <button
+                                                className="flex mx-auto mt-12 mb-5 justify-center text-gray-600 cursor-pointer hover:text-white hover:scale-110 transition-all duration-300"
+                                                onClick={() => setIsModalOpen(false)}
+                                            >
+                                                Close
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="flex mx-auto mt-12 mb-12 justify-center text-gray-600 cursor-pointer hover:text-white hover:scale-110 transition-all duration-300"
+                                                onClick={() => setIsModalOpen(true)}
+                                            >
+                                                Show your complete task
+                                            </button>
+                                        )
+                                    )
                                 }
+                                
+                                
+
 
                                 {
                                     isAccessModalOpen ? 
@@ -293,7 +300,10 @@ const parseJwt = (token: string) => {
                                 
                             </div>
 
+
                             {/* compleate task show */}
+
+                            
                             {isModalOpen && (
                                 <div>
                                     <>
@@ -330,7 +340,9 @@ const parseJwt = (token: string) => {
                                                     </button>
                                                 </>
                                             )}
+
                                             <h1 className="flex pl-20 text-green-400 text-lg">Complete</h1>
+
                                         </div>
                                     </li>
                                     ))}
@@ -340,28 +352,33 @@ const parseJwt = (token: string) => {
 
 
                             {/* Acess modal window */}
-                            {isAccessModalOpen && (
-                                <div className="mt-10">
-                                    <h2 className="text-center text-2xl font-semibold mb-4">Tasks Shared With You</h2>
-                                    {sharedTasks.length === 0 ? (
-                                        <p className="text-center text-gray-400">No shared tasks available.</p>
-                                    ) : (
-                                        <ul className="space-y-2">
-                                        {sharedTasks.map((task) => (
-                                            <li key={task.id} className="p-4 bg-gray-600 rounded-md shadow-sm">
-                                            <div className="flex justify-between">
-                                                <div>
-                                                <h3 className="text-lg font-medium">{task.list.title}</h3>
-                                                <p>{task.list.description}</p>
+
+
+                            <>
+                                {isAccessModalOpen && (
+                                    <div className="mt-10">
+                                        <h2 className="text-center text-2xl font-semibold mb-4">Tasks Shared With You</h2>
+                                        {sharedTasks.length === 0 ? (
+                                            <p className="text-center text-gray-400">No shared tasks available.</p>
+                                        ) : (
+                                            <ul className="space-y-2">
+                                            {sharedTasks.map((task) => (
+                                                <li key={task.id} className="p-4 bg-gray-600 rounded-md shadow-sm">
+                                                <div className="flex justify-between">
+                                                    <div>
+                                                    <h3 className="text-lg font-medium">{task.list.title}</h3>
+                                                    <p>{task.list.description}</p>
+                                                    </div>
+                                                    <h1 className="flex pl-20 text-blue-300 text-lg">Shared</h1>
                                                 </div>
-                                                <h1 className="flex pl-20 text-blue-300 text-lg">Shared</h1>
-                                            </div>
-                                            </li>
-                                        ))}
-                                        </ul>
-                                    )}
-                                </div>
-                            )}
+                                                </li>
+                                            ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                )}
+                            </>
+
                         </div>
                     </div>
                 )}
