@@ -172,7 +172,9 @@ const parseJwt = (token: string) => {
                             <div className="max-w-2xl mx-auto px-4 mt-10">
                                 <h2 className="flex text-4xl font-semibold mb-4 justify-center">Your Shared Tasks</h2>
                                 <ul className="space-y-2">
-                                    {tasks.map((task) => (
+                                    {tasks
+                                    .filter((task)=> !task.isCompleted)
+                                    .map((task) => (
                                         <li key={task.id} className="p-4 bg-gray-600 rounded-md shadow-sm">
                                             <div className="flex justify-between">
 
@@ -191,10 +193,10 @@ const parseJwt = (token: string) => {
                                                 )}
 
                                                 <button
-                                                        onClick={() => handleDelete(task.id)}
+                                                        onClick={() => handleComplete(task.id)}
                                                         className="bg-blue-600 px-3 py-1 rounded-md text-white hover:bg-red-600"
                                                     >
-                                                        Compleate
+                                                        Compleated
                                                 </button>
                                             </div>
                                         </li>

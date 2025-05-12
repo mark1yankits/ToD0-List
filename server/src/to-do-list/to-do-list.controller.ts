@@ -7,10 +7,12 @@ import {
   Param,
   UseGuards,
   Delete,
+  Patch,
 } from '@nestjs/common';
 import { ToDoListService } from './to-do-list.service';
 import { CreateToDoListDto } from './dto/create-to-do-list.dto';
 import { JwtAuthGuard } from 'src/auth/guards/auth/jwt-auth.guard';
+import { UpdateToDoListDto } from './dto/update-to-do-list.dto';
 
 @Controller('toDoList')
 @UseGuards(JwtAuthGuard)
@@ -26,6 +28,12 @@ export class ToDoListController {
   @UseGuards(JwtAuthGuard)
   findByUserId(@Param('userId') userId:number){
     return this.toDoListService.findByUserId(userId)
+  }
+
+
+  @Patch(':id')
+  update(@Param('id') id: number, @Body() updateDto: UpdateToDoListDto) {
+    return this.toDoListService.update(id, updateDto);
   }
   
   @Delete(':listId')

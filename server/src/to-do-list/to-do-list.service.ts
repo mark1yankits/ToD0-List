@@ -5,6 +5,7 @@ import { ToDoList } from './entities/to-do-list.entity';
 import { CreateToDoListDto } from './dto/create-to-do-list.dto';
 import { User } from 'src/user/entities/user.entity';
 import { lutimes } from 'fs';
+import { UpdateToDoListDto } from './dto/update-to-do-list.dto';
 
 @Injectable()
 export class ToDoListService {
@@ -60,6 +61,30 @@ export class ToDoListService {
     return list
 
   }
+
+  // update Complete
+  
+  async update(id: number, updateDto: UpdateToDoListDto) {
+    const task = await this.toDoListRepository.findOne({
+      where: { id },
+      relations: ['owner'],
+    });
+  
+    if (!task) {
+      throw new BadRequestException('Task not found');
+    }
+  
+    if (updateDto.isCompleted !== undefined) {
+      task.isCompleted = updateDto.isCompleted;
+    }
+  
+  
+    await this.toDoListRepository.save(task);
+    return { message: 'Task updated successfully' };
+  }
+  
+
+  // delete
 
   async remove(listId: number, userId:number) {
     const listRemove = await this.toDoListRepository.findOne({
