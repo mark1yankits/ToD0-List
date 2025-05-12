@@ -73,7 +73,7 @@ const Task = () => {
     // --- Handle task completion toggle ---
     const handleToggleComplete = async (id: string, currentState: boolean) => {
         try {
-            await axiosInstance.put(`http://localhost:3004/api/tasks/${id}`, {
+            await axiosInstance.patch(`http://localhost:3004/api/tasks/${id}`, {
                 completed: !currentState,
             });
             fetchTasks(); 
