@@ -8,6 +8,7 @@ const Task = () => {
     const [description, setDescription] = useState("");
     const [completed, setCompleted] = useState(false);
 
+
     
     const token = localStorage.getItem("token"); // Get the token from localStorage
 
@@ -135,6 +136,7 @@ const Task = () => {
                                         {task.completed ? 'Completed' : 'Not Completed'}
                                     </span>
                                 </div>
+
                                 <div className="flex space-x-2">
                                     <button
                                         onClick={() => handleToggleComplete(task.id, task.completed)}

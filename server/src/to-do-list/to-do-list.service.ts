@@ -28,6 +28,7 @@ export class ToDoListService {
         title: createToDoListDto.title,
         description: createToDoListDto.description,
         owner: { id: userId },
+        
       },
     });
 
@@ -43,10 +44,6 @@ export class ToDoListService {
     return await this.toDoListRepository.save(newToDoList);
   }
 
-  
-
-
- 
 
   // id user found one
 
@@ -54,7 +51,8 @@ export class ToDoListService {
     const list = this.toDoListRepository.find({
       where:{
         owner:{id:userId}
-      }
+      },
+      
     }) 
 
     if(!list) throw new BadRequestException('no ToDO list foune for this user !');

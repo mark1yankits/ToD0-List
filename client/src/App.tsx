@@ -13,7 +13,7 @@ const App = () => {
         <Routes>
           <Route path="/tasks" element={<Task />} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/comonTasks" element={<СommonTasks />} />
+          <Route path="/commonTasks" element={<СommonTasks />} />
         </Routes>
       </Layout>
     </Router>

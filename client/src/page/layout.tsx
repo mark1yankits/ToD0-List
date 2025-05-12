@@ -1,7 +1,11 @@
-import type { FC, ReactNode } from "react";
+import { type FC, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 const Layout: FC<{ children: ReactNode }> = ({ children }) => {
+
+
+
+
 
     return (
         <div className="min-h-screen bg-slate-900 pb-20 font-roboto text-white flex flex-col">
@@ -10,10 +14,10 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
                     <Link to="/" className="text-white hover:text-gray-300">To-Do App</Link>
                 </div>
                 <nav className="space-x-4">
+                    <Link to="/tasks"> Tasks</Link>
                     <Link to="/commonTasks" className="hover:text-gray-300">Common tasks</Link>
                     <Link to="/auth" className="hover:text-gray-300">Login</Link>
-                    <Link to="/register" className="hover:text-gray-300">Register</Link>
-                    <Link to="/logout" className="hover:text-gray-300">Logout</Link>
+                    <Link to="/logout" className="hover:text-gray-300">Logout</Link> 
                 </nav>
             </header>
             <main className="flex-1 p-6">
