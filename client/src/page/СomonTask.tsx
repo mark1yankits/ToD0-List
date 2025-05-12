@@ -13,6 +13,10 @@ const parseJwt = (token: string) => {
     };
 
     const СommonTasks = () => {
+
+        const [isModalOpen, setIsModalOpen] = useState(false);
+
+
         const [tasks, setTasks] = useState<any[]>([]);
         const [title, setTitle] = useState("");
         const [description, setDescription] = useState("");
@@ -70,6 +74,20 @@ const parseJwt = (token: string) => {
                 console.error("Error marking task as complete:", err);
             }
         };
+
+
+        const unhandleComplete = async (id: number) => {
+            try {
+                await axiosInstance.patch(`/toDoList/${id}`, {
+                    isCompleted: false,
+                });
+                fetchCommonTasks();
+            } catch (err) {
+                console.error("Error marking task as complete:", err);
+            }
+        };
+
+
 
         // add task requires the admin role
         const handleSubmit = async (e: React.FormEvent) => {
@@ -169,6 +187,7 @@ const parseJwt = (token: string) => {
     
 
                             {/* show  task  */}
+
                             <div className="max-w-2xl mx-auto px-4 mt-10">
                                 <h2 className="flex text-4xl font-semibold mb-4 justify-center">Your Shared Tasks</h2>
                                 <ul className="space-y-2">
@@ -202,7 +221,67 @@ const parseJwt = (token: string) => {
                                         </li>
                                     ))}
                                 </ul>
+
+
+
+                                {
+                                    isModalOpen 
+                                    ? 
+                                    <button className="flex  mx-auto mt-15 mb-5 justify-center text-gray-600 cursor-pointer hover:text-white hover:scale-110 transition-all duration-300" onClick={()=>setIsModalOpen(false)}>
+                                        close
+                                    </button>
+                                    :
+                                    <button className="flex  mx-auto mt-15 mb-15 justify-center text-gray-600 cursor-pointer hover:text-white hover:scale-110 transition-all duration-300" onClick={()=>setIsModalOpen(true)}>
+                                        Show your compleate task
+                                    </button>
+                                }
+                                
                             </div>
+
+                            {/* compleate task show */}
+                            {isModalOpen && (
+                                <div>
+                                    <>
+                                    {tasks
+                                    .filter((item)=> item.isCompleted)
+                                    .length ===0 ?
+                                    <p className="text-center text-xl text-gray-500">No completed tasks available.</p>
+                                    :
+                                    tasks
+                                    .filter((item)=> item.isCompleted)
+                                    .map((task)=>(
+                                        <li key={task.id} className="p-4 bg-gray-600 rounded-md shadow-sm">
+                                        <div className="flex justify-between">
+
+                                            <div>
+                                                <h3 className="text-lg font-medium">{task.title}</h3>
+                                                <p>{task.description}</p>
+                                            </div>
+
+                                            {role === "Admin" && (  
+                                                <>
+                                                    <button
+                                                        onClick={() => handleDelete(task.id)}
+                                                        className="bg-red-500 px-3 py-1 rounded-md text-white hover:bg-blue-500"
+                                                    >
+                                                        Delete
+                                                    </button>
+
+                                                    <button
+                                                    onClick={() => unhandleComplete(task.id)}
+                                                    className="bg-blue-600 px-3 py-1 rounded-md text-white hover:bg-red-600"
+                                                    >
+                                                    mark not completed
+                                                    </button>
+                                                </>
+                                            )}
+                                            <h1 className="flex pl-20 text-green-400 text-lg">Complete</h1>
+                                        </div>
+                                    </li>
+                                    ))}
+                                    </>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
