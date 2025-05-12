@@ -17,6 +17,9 @@ const parseJwt = (token: string) => {
         const [isModalOpen, setIsModalOpen] = useState(false);
 
 
+        const [isAccessModalOpen, setIsAccessModalOpen] = useState(false);
+        const [sharedTasks, setSharedTasks] = useState<any[]>([]);
+
         const [tasks, setTasks] = useState<any[]>([]);
         const [title, setTitle] = useState("");
         const [description, setDescription] = useState("");
@@ -28,6 +31,7 @@ const parseJwt = (token: string) => {
         const userData = token ? parseJwt(token) : null;
         const userId = userData?.id;
         const userRole = userData?.role;  
+        const userEmail = userData?.email
     
         // for save role user
         useEffect(() => {
@@ -52,6 +56,18 @@ const parseJwt = (token: string) => {
                 setIsAuth(true);
             } catch (err) {
                 console.error("Error fetching shared tasks:", err);
+            }
+        };
+
+
+        // show task with acess
+
+        const fetchCommonTasksWithAcees = async () => {
+            try {
+                const response = await axiosInstance.get(`/collaborator/user/${userEmail}`);
+                setSharedTasks(response.data); //<--- save joint tugs
+            } catch (err) {
+                console.error("Error fetching shared tasks with access:", err);
             }
         };
     
@@ -93,27 +109,49 @@ const parseJwt = (token: string) => {
         const handleSubmit = async (e: React.FormEvent) => {
             e.preventDefault();
             try {
+                let userExists = false;
+                let collaboratorRole = "Viewer"; 
+        
+                // 1/
+                if (collaboratorEmail) {
+                    const emailCheckResponse = await axiosInstance.get(`/user/check-email/${collaboratorEmail}`);
+                    if (emailCheckResponse.data.exists) {
+                        userExists = true;
+                        if (emailCheckResponse.data.role) {
+                            collaboratorRole = emailCheckResponse.data.role; 
+                        }
+                    } else {
+                        alert("Користувача з таким email не знайдено.");
+                        return;
+                    }
+                }
+        
+                // 2. crate task
                 const response = await axiosInstance.post("/toDoList", {
                     title,
                     description,
                 });
+        
                 const listId = response.data.id;
-    
-                if (collaboratorEmail) {
+        
+                // 3. create colloborator
+                if (userExists && collaboratorEmail) {
                     await axiosInstance.post(`/collaborator/${listId}`, {
                         email: collaboratorEmail,
-                        role: "Viewer",
+                        role: collaboratorRole,
                     });
                 }
-    
+        
+                // 4. clear and update 
                 setTitle("");
                 setDescription("");
                 setCollaboratorEmail("");
                 fetchCommonTasks();
             } catch (err) {
-                console.error("Error creating shared task:", err);
+                console.error("Помилка під час створення спільного списку:", err);
             }
         };
+        
     
         const handleDelete = async (id: number) => {
             try {
@@ -124,6 +162,8 @@ const parseJwt = (token: string) => {
             }
         };
     
+
+
         return (
             <main>
                 {isAuth && (
@@ -205,7 +245,7 @@ const parseJwt = (token: string) => {
                                                 {role === "Admin" && (  
                                                     <button
                                                         onClick={() => handleDelete(task.id)}
-                                                        className="bg-red-500 px-3 py-1 rounded-md text-white hover:bg-blue-500"
+                                                        className="bg-red-500 px-3 py-1 mr-5 ml-5 rounded-md text-white hover:bg-blue-500"
                                                     >
                                                         Delete
                                                     </button>
@@ -235,6 +275,21 @@ const parseJwt = (token: string) => {
                                         Show your compleate task
                                     </button>
                                 }
+
+                                {
+                                    isAccessModalOpen ? 
+                                    <button className="flex mx-auto mb-5 justify-center text-gray-600 hover:text-white hover:scale-110 transition-all duration-300"
+                                        onClick={() => setIsAccessModalOpen(false)}>
+                                        Close Shared With Me
+                                    </button> :
+                                    <button className="flex mx-auto mb-5 justify-center text-gray-600 hover:text-white hover:scale-110 transition-all duration-300"
+                                        onClick={() => {
+                                            setIsAccessModalOpen(true);
+                                            fetchCommonTasksWithAcees(); 
+                                        }}>
+                                        Show Shared With Me
+                                    </button>
+                                }
                                 
                             </div>
 
@@ -262,7 +317,7 @@ const parseJwt = (token: string) => {
                                                 <>
                                                     <button
                                                         onClick={() => handleDelete(task.id)}
-                                                        className="bg-red-500 px-3 py-1 rounded-md text-white hover:bg-blue-500"
+                                                        className="bg-red-500 mr-5 ml-5 px-3 py-1 rounded-md text-white hover:bg-blue-500"
                                                     >
                                                         Delete
                                                     </button>
@@ -280,6 +335,31 @@ const parseJwt = (token: string) => {
                                     </li>
                                     ))}
                                     </>
+                                </div>
+                            )}
+
+
+                            {/* Acess modal window */}
+                            {isAccessModalOpen && (
+                                <div className="mt-10">
+                                    <h2 className="text-center text-2xl font-semibold mb-4">Tasks Shared With You</h2>
+                                    {sharedTasks.length === 0 ? (
+                                        <p className="text-center text-gray-400">No shared tasks available.</p>
+                                    ) : (
+                                        <ul className="space-y-2">
+                                        {sharedTasks.map((task) => (
+                                            <li key={task.id} className="p-4 bg-gray-600 rounded-md shadow-sm">
+                                            <div className="flex justify-between">
+                                                <div>
+                                                <h3 className="text-lg font-medium">{task.list.title}</h3>
+                                                <p>{task.list.description}</p>
+                                                </div>
+                                                <h1 className="flex pl-20 text-blue-300 text-lg">Shared</h1>
+                                            </div>
+                                            </li>
+                                        ))}
+                                        </ul>
+                                    )}
                                 </div>
                             )}
                         </div>
