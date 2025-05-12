@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Layout from "./page/layout";
 import Task from "./page/Task";
 import Auth from "./page/Auth";
+import СommonTasks from "./page/СomonTask";
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
         <Routes>
           <Route path="/tasks" element={<Task />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/comonTasks" element={<СommonTasks />} />
         </Routes>
       </Layout>
     </Router>
