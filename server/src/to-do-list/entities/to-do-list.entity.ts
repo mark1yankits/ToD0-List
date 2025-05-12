@@ -14,13 +14,20 @@ import { Collaborator } from 'src/collaborator/entities/collaborator.entity';
 export class ToDoList {
     @PrimaryGeneratedColumn()
     id: number;
+
     @Column()
     title: string;
+
     @Column()
     description: string;
+
+    @Column({ default: false })
+    isCompleted: boolean;   
+
     @ManyToOne(() => User, (user) => user.ownedLists)
     @JoinColumn({ name: 'owner_id' })
     owner: User;
+
     @OneToMany(() => Task, (task) => task.list, { cascade: true })
     tasks: Task[];
 
